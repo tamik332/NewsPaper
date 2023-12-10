@@ -1,0 +1,95 @@
+Создаем двух пользователей
+user1 = User.objects.create_user('user1')
+user2 = User.objects.create_user('user2')
+
+Создаем два объекта модели Author, связанные с пользователями
+author1 = Author.objects.create(user=user1, rating=0.0)
+author2 = Author.objects.create(user=user2, rating=0.0)
+
+category1 = Category.objects.create(name = 'Спорт')
+category2 = Category.objects.create(name = 'Политика')
+category3 = Category.objects.create(name = 'Образование')
+category4 = Category.objects.create(name = 'Мода')
+
+
+post1 = Post.objects.create(author = author1, post_type = 'article', title = 'ПРЕИМУЩЕСТВО СПОРТА В ОБРАЗОВАНИИ', content ='Спортивная подготовка и академическое обучение взаимосвязаны. Оба являются двумя сторонами одной медали. Спорт в образовании является неотъемлемой частью учебной программы. Он помогает формировать личность человека и способствует его целостному развитию. В некотором роде этот предмет является демонстрацией всех дисциплин, которые человек изучал в школе. Каждый вид спорта основан на математике и физике. Хотя многие предметы преподаются в классе, спорт и физкультура дают учащимся возможность заниматься спортом на свежем воздухе, а также приобретать широкий спектр навыков. У спорта есть много образовательных преимуществ, и не только для физического.', rating = 0.0)
+
+
+post2 = Post.objects.create(author = author2, post_type = 'article', title = 'Мода и Политика: Когда одежда говорит о мнении', content='Мода и политика, казалось бы, непохожи, но в современном мире они часто переплетаются, создавая мощные заявления. Одежда стала не только средством самовыражения, но и инструментом для выражения политических взглядов.Символика стала неотъемлемой частью гардероба активистов. Цвета, логотипы и слоганы на одежде становятся громкими заявлениями в поддержку определенных идей. Так, феминистское движение внедрило в моду розовые символы, ставшие ярким выражением борьбы за равноправие.Одежда также становится медиумом для комментирования политических событий. Дизайнеры создают коллекции, вдохновленные актуальными темами, от климатических изменений до общественной несправедливости.Таким образом, мода не ограничивается лишь стилем – она становится канвой для визуального выражения наших политических убеждений и формирования общественного диалога.', rating = 0.0)
+post3 = Post.objects.create(author = author1, post_type = 'news', title = 'Звезда Мирового Футбола Завершила Карьеру', content='Известный футбольный ветеран и легенда современного футбола, Лионель Месси, объявил о завершении своей выдающейся карьеры. 34-летний аргентинец, считавшийся одним из лучших игроков всех времен, принял решение завершить свою профессиональную деятельность после многолетнего влияния на мировой футбол.', rating = 0.0)
+post1.category.add(category1, category3)
+post2.category.add(category2, category4)
+post3.category.add(category1)
+comment1_post1 = Comment.objects.create(post = post1, user = user1, text = 'Отличная статья 1', rating = 0.0)
+comment2_post2 = Comment.objects.create(post = post2, user = user2, text = 'Отличная статья 2', rating = 0.0)
+comment3_post1 = Comment.objects.create(post = post1, user = user1, text = 'Отличная статья 3', rating = 0.0)
+
+post1_instance = Post.objects.get(id=1)
+post1_instance.like()
+post2_instance = Post.objects.get(id=2)
+post2_instance.like()
+post2_instance.like()
+post3_instance = Post.objects.get(id=3)
+post3_instance.like()
+post3_instance.like()
+post3_instance.like()
+post3_instance.dislike()
+comment1_instance = Comment.objects.get(id=1)
+comment1_instance.like()
+comment1_instance.like()
+comment2_instance = Comment.objects.get(id=2)
+comment2_instance.dislike()
+comment3_instance = Comment.objects.get(id=3)
+comment3_instance.like()
+comment3_instance.like()
+comment3_instance.like()
+comment3_instance.like()
+comment3_instance.like()
+
+authors = Author.objects.all()
+authors
+<QuerySet [<Author: Author object (1)>, <Author: Author object (2)>]>
+>>> for a in authors:
+...     a.update_rating()
+...
+>>> Author.objects.order_by('rating')
+<QuerySet [<Author: Author object (2)>, <Author: Author object (1)>]>
+>>> Author.objects.order_by('-rating')
+<QuerySet [<Author: Author object (1)>, <Author: Author object (2)>]>
+>>> Author.objects.order_by('-rating').first()
+<Author: Author object (1)>
+>>> max_rating_author = Author.objects.order_by('-rating').first()
+
+>>> max_rating_author.user.username
+
+ max_rating_post = Post.objects.filter(post_type='article').order_by("-rating").first()
+>>> max_rating_post
+<Post: Post object (2)>
+>>> max_rating_post.create_at
+datetime.datetime(2023, 11, 26, 17, 28, 43, 669862, tzinfo=datetime.timezone.utc)
+>>> max_rating_post.author.user.username
+'user2'
+>>> max_rating_post.title
+'Мода и Политика: Когда одежда говорит о мнении'
+>>> max_rating_post.preview()
+'Мода и политика, казалось бы, непохожи, но в современном мире они часто переплетаются, создавая мощные заявления. Одежда ста...'
+
+max_rating_post.rating
+
+all_com = max_rating_post.comment_set.all()
+>>> all_com
+<QuerySet [<Comment: Comment object (2)>]>
+>>> for i in all_com:
+...     print(i.create_at)
+...     print(i.user.username)
+...     print(i.rating)
+...     print(i.text)
+...
+2023-11-26 17:36:43.334987+00:00
+user2
+-1
+Отличная статья 2
+>>>
+
+
+
