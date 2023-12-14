@@ -1,0 +1,42 @@
+<!--  наследуемся от шаблона default.html, который мы создавали для flatpages -->
+{% extends 'flatpages/default.html' %}
+
+<!-- Название у нас будет Product -->
+{% block title %}
+Post
+{% endblock title %}
+
+<!-- В контенте на странице мы выводим сам товар, идентификатор которого был передан в url -->
+{% block content %}
+   {% if post %}
+       <table>
+           <tr>
+               <td>Название</td>
+               <td>Дата публикации</td>
+<!--               <td>Автор</td>-->
+               <td>Статья</td>
+<!--               <td>Категория</td>-->
+<!--               <td>Рейтинг</td>-->
+           </tr>
+
+
+
+           <tr>
+               <td>{{ post.title }}</td>
+               <td>{{ post.create_at|date:'M d Y' }}</td>
+<!--               <td>{{ post.author.user }}</td>-->
+
+               <td>{{ post.content }}</td>
+<!--               <td>-->
+<!--                   {% for category in post.category.all %}-->
+<!--                       {{ category.name }}{% if not forloop.last %}, {% endif %}-->
+<!--                   {% endfor %}-->
+<!--               </td>-->
+<!--               <td>{{ post.rating }}</td>-->
+           </tr>
+
+       </table>
+   {% else %}
+       <h2>Нет публикаций</h2>
+   {% endif %}
+{% endblock content %}

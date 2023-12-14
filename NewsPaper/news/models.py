@@ -11,7 +11,8 @@ class Author(models.Model):
         comments_rating = self.user.comments.aggregate(models.Sum("rating"))['rating__sum'] or 0
         article_comments_rating = (self.posts
                                    .filter(author__user__comments__isnull=False)
-                                   .aggregate(models.Sum('author__user__comments__rating'))['author__user__comments__rating__sum'] or 0)
+                                   .aggregate(models.Sum('author__user__comments__rating'))[
+                                       'author__user__comments__rating__sum'] or 0)
 
         total_rating = articles_rating * 3 + comments_rating + article_comments_rating
         self.rating = total_rating
@@ -20,6 +21,9 @@ class Author(models.Model):
 
 class Category(models.Model):
     name = models.CharField(max_length=255, unique=True)
+
+    def __str__(self):
+        return self.name.title()
 
 
 class PostCategory(models.Model):
@@ -30,7 +34,7 @@ class PostCategory(models.Model):
 class Post(models.Model):
     author = models.ForeignKey(Author, on_delete=models.CASCADE, related_name='posts')
     post_type = models.CharField(max_length=7, choices=[('article', 'Статья'), ('news', 'Новость')])
-    create_at = models .DateTimeField(auto_now_add=True)
+    create_at = models.DateTimeField(auto_now_add=True)
     category = models.ManyToManyField(Category, through=PostCategory)
     title = models.CharField(max_length=255)
     content = models.TextField()
@@ -46,6 +50,9 @@ class Post(models.Model):
 
     def preview(self):
         return self.content[:124] + '...'
+
+    def __str__(self):
+        return f'{self.title.title()}:{self.content[:20]}'
 
 
 class Comment(models.Model):

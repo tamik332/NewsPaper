@@ -1,0 +1,48 @@
+
+{% extends 'flatpages/default.html' %}
+
+{% load custom_filters %}
+
+ Название у нас будет products
+{% block title %}
+Posts
+{% endblock title %}
+
+
+{% block content %}
+   <h1>Все публикации</h1>
+    <h3>{{ posts|length }}</h3>
+   <hr>
+   {% if posts %}
+       <table>
+           <tr>
+               <td>Название</td>
+               <td>Дата публикации</td>
+<!--               <td>Автор</td>-->
+               <td>Статья</td>
+<!--               <td>Категория</td>-->
+<!--               <td>Рейтинг</td>-->
+           </tr>
+
+
+           {% for post in posts %}
+           <tr>
+               <td>{{ post.title }}</td>
+               <td>{{ post.create_at|date:'M d Y' }}</td>
+<!--               <td>{{ post.author.user }}</td>-->
+
+               <td>{{ post.content|truncatewords:20|censor_text }}</td>
+<!--               <td>-->
+<!--                   {% for category in post.category.all %}-->
+<!--                       {{ category.name }}{% if not forloop.last %}, {% endif %}-->
+<!--                   {% endfor %}-->
+<!--               </td>-->
+<!--               <td>{{ post.rating }}</td>-->
+           </tr>
+           {% endfor %}
+
+       </table>
+   {% else %}
+       <h2>Нет публикаций</h2>
+   {% endif %}
+{% endblock content %}
